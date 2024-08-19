@@ -1,6 +1,8 @@
 library(tidyverse)
 library(gtsummary)
 
+colnames(nlsy)
+
 nlsy_cols <- c("glasses", "eyesight", "sleep_wkdy", "sleep_wknd",
 							 "id", "nsibs", "samp", "race_eth", "sex", "region",
 							 "income", "res_1980", "res_2002", "age_bir")
@@ -56,4 +58,40 @@ tbl_summary(
 	bold_labels() |>
 	modify_footnote(update = everything() ~ NA) |>
 	modify_header(label = "**Variable**", p.value = "**P**")
+
+#Include categorical region, race/ethnicity, income, and the sleep variables
+tbl_summary(
+	nlsy,
+	include = c(race_eth_cat, region_cat,
+							income, sleep_wkdy, sleep_wknd),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "Region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep per Weekday",
+		sleep_wknd ~ "Sleep per Weekend"
+	),
+	missing_text = "Missing")
+
+#Stratify the table by sex. Add a p-value comparing the sexes and an overall column combining both sexes.
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(race_eth_cat, region_cat,
+							income, sleep_wkdy, sleep_wknd),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "Region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep per Weekday",
+		sleep_wknd ~ "Sleep per Weekend"
+	),
+	missing_text = "Missing") |>
+	add_p(test = list(all_continuous() ~ "t.test",
+										all_categorical() ~ "chisq.test")) |>
+	add_overall(col_label = "**Total**") |>
+	bold_labels() |>
+	modify_footnote(update = everything() ~ NA) |>
+	modify_header(label = "**Variable**", p.value = "**P**")
+
 
