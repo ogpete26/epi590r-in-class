@@ -1,6 +1,8 @@
 ---
 title: "gtsummary in quarto"
 format: html
+  html:
+    embed-resources:true
 
 ---
 
