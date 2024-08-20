@@ -59,9 +59,26 @@ Add a chunk where you calculate the mean number of hours of sleep on weekends (y
 table1 <- tbl_summary(
   nlsy,
   include = sleep_wknd)
-mean_sleep_wkend <- mean(nlsy$sleep_wknd,na.rm = TRUE)
+median_sleep_wkend <- median(nlsy$sleep_wknd,na.rm = TRUE)
 inline_text(table1, variable = "sleep_wknd")
 ```
-1. The mean number of hours was `r mean_sleep_wkend`
+1. The median number of hours was `r median_sleep_wkend`
 
-2. The mean number of hours was `mean(nlsy$sleep_wknd,na.rm = TRUE)`
+2. The median number of hours was `r median(nlsy$sleep_wknd,na.rm = TRUE)`
+
+```{r }
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+#| output-location: slide
+table1 <- tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir, sleep_wknd)) |> 
+  add_overall(last = TRUE)
+table1
+
+median_hrs_sleep <- inline_text(table1, variable = "sleep_wknd", column = "stat_0")
+```
+
+The median and IQR are `r median_hrs_sleep`
