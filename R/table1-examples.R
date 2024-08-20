@@ -3,6 +3,7 @@ library(gtsummary)
 
 colnames(nlsy)
 
+
 nlsy_cols <- c("glasses", "eyesight", "sleep_wkdy", "sleep_wknd",
 							 "id", "nsibs", "samp", "race_eth", "sex", "region",
 							 "income", "res_1980", "res_2002", "age_bir")
@@ -76,7 +77,6 @@ tbl_summary(
 #Stratify the table by sex. Add a p-value comparing the sexes and an overall column combining both sexes.
 tbl_summary(
 	nlsy,
-	by = sex_cat,
 	include = c(race_eth_cat, region_cat,
 							income, sleep_wkdy, sleep_wknd),
 	label = list(
@@ -87,11 +87,38 @@ tbl_summary(
 		sleep_wknd ~ "Sleep per Weekend"
 	),
 	missing_text = "Missing") |>
+	#adds p-value
 	add_p(test = list(all_continuous() ~ "t.test",
 										all_categorical() ~ "chisq.test")) |>
+	#adds total column
 	add_overall(col_label = "**Total**") |>
+	#bold labels
 	bold_labels() |>
 	modify_footnote(update = everything() ~ NA) |>
+	#changes desired headers, asteriks make it bold
 	modify_header(label = "**Variable**", p.value = "**P**")
+
+#For the income variable, show the 10th and 90th percentiles of
+#income with 3 digits, and for the sleep variables,
+#show the min and the max with 1 digit.
+
+tbl_summary(
+	nlsy,
+	include = c(race_eth_cat, region_cat,
+							income, sleep_wkdy, sleep_wknd),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "Region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep per Weekday",
+		sleep_wknd ~ "Sleep per Weekend"
+	),
+	missing_text = "Missing") |>
+
+	statistic = list(
+		income ~ "{p10}; {p90}",
+		starts_with("sleep") ~ "{min}; {max}"	) |>
+
+	digits = list()
 
 

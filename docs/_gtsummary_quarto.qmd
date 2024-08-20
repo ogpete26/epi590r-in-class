@@ -22,15 +22,18 @@ nlsy <- read_csv(here::here("data", "raw", "nlsy.csv"),
 ```
 
 # Customization of `tbl_summary()`
+@tbl-one shows the descriptive statistics.
 
 ```{r table summary by sex}
-#| error: true
+#| label: tbl-one
+#| tbl-cap: "TABLEEEEE"
 tbl_summary(
   nlsy,
   by = sex_cat,
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir))
 ```
+
 
 ```{r table by sex with labels}
 tbl_summary(
@@ -47,3 +50,18 @@ tbl_summary(
   ),
   missing_text = "Missing")
 ```
+
+Add a chunk where you calculate the mean number of hours of sleep on weekends (you can use the mean() function). Have the code print that output.
+
+```{r avg number of hrs slept}
+#|label: tbl-last
+#|
+table1 <- tbl_summary(
+  nlsy,
+  include = sleep_wknd)
+mean_sleep_wkend <- mean(nlsy$sleep_wknd,na.rm = TRUE)
+inline_text(table1, variable = "sleep_wknd")
+```
+1. The mean number of hours was `r mean_sleep_wkend`
+
+2. The mean number of hours was `mean(nlsy$sleep_wknd,na.rm = TRUE)`
